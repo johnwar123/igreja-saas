@@ -155,6 +155,33 @@
     <script>
       var contador = 3;
 
+      // ✅ NOVO: Carregar membros salvos quando a página abre
+      function carregarMembros() {
+        var membrosSalvos = localStorage.getItem("membros");
+        if (membrosSalvos) {
+          var membros = JSON.parse(membrosSalvos);
+          var tabela = document.getElementById("tabela");
+          
+          membros.forEach(function(membro) {
+            var linha = tabela.insertRow();
+            var cor = membro.status == "Ativo" ? "ativo" : "inativo";
+            
+            linha.innerHTML = `
+              <td>${membro.id}</td>
+              <td>${membro.nome}</td>
+              <td>${membro.telefone}</td>
+              <td>${membro.email}</td>
+              <td><span class="tag ${cor}">${membro.status}</span></td>
+              <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
+            `;
+            
+            if (membro.id >= contador) {
+              contador = membro.id + 1;
+            }
+          });
+        }
+      }
+
       function cadastrar() {
         var nome = document.getElementById("nome").value;
         var telefone = document.getElementById("telefone").value;
@@ -165,6 +192,21 @@
           alert("Digite o nome do membro!");
           return;
         }
+
+        // ✅ NOVO: Criar objeto com os dados do membro
+        var novoMembro = {
+          id: contador,
+          nome: nome,
+          telefone: telefone,
+          email: email,
+          status: status
+        };
+
+        // ✅ NOVO: Salvar no localStorage
+        var membrosSalvos = localStorage.getItem("membros");
+        var membros = membrosSalvos ? JSON.parse(membrosSalvos) : [];
+        membros.push(novoMembro);
+        localStorage.setItem("membros", JSON.stringify(membros));
 
         var tabela = document.getElementById("tabela");
         var linha = tabela.insertRow();
@@ -187,8 +229,41 @@
 
       function apagar(btn) {
         var linha = btn.parentElement.parentElement;
+        var id = parseInt(linha.cells[0].textContent);
         linha.remove();
+        
+        // ✅ NOVO: Atualizar localStorage ao apagar
+        salvarMembrosAtual();
       }
+
+      // ✅ NOVO: Função para salvar os membros atuais do DOM no localStorage
+      function salvarMembrosAtual() {
+        var linhas = document.querySelectorAll("#tabela tr");
+        var membros = [];
+        
+        linhas.forEach(function(linha) {
+          var id = parseInt(linha.cells[0].textContent);
+          var nome = linha.cells[1].textContent;
+          var telefone = linha.cells[2].textContent;
+          var email = linha.cells[3].textContent;
+          var status = linha.cells[4].textContent.trim();
+          
+          membros.push({
+            id: id,
+            nome: nome,
+            telefone: telefone,
+            email: email,
+            status: status
+          });
+        });
+        
+        localStorage.setItem("membros", JSON.stringify(membros));
+      }
+
+      // ✅ NOVO: Executar ao carregar a página
+      window.addEventListener("DOMContentLoaded", function() {
+        carregarMembros();
+      });
     </script>
   </body>
 </html>
