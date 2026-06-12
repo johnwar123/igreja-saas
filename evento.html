@@ -28,20 +28,17 @@
 
     .container {
       padding: 30px;
-      max-width: 950px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     .titulo-secao {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 25px 0 15px;
       color: #0f3460;
       font-size: 22px;
       font-weight: bold;
       border-bottom: 3px solid #0f3460;
       padding-bottom: 8px;
+      margin: 25px 0 15px;
     }
 
     .formulario {
@@ -52,10 +49,7 @@
       box-shadow: 0 5px 20px rgba(0,0,0,0.08);
     }
 
-    .linha {
-      display: flex;
-      gap: 15px;
-    }
+    .linha { display: flex; gap: 15px; }
 
     input, select, textarea {
       width: 100%;
@@ -76,92 +70,73 @@
       background: linear-gradient(135deg, #0f3460, #16213e);
       color: white;
       border: none;
-      padding: 13px 30px;
+      padding: 13px;
       border-radius: 10px;
       cursor: pointer;
       font-size: 16px;
       margin-top: 10px;
       width: 100%;
-      transition: opacity 0.3s;
     }
     .btn:hover { opacity: 0.85; }
 
-    .eventos-lista {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
     }
 
     .evento-card {
-      background: white;
       border-radius: 15px;
-      padding: 20px 25px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      padding: 25px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .evento-card:hover { transform: translateY(-5px); }
+
+    .culto   { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .louvor  { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .missao  { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .estudo  { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    .outro   { background: linear-gradient(135deg, #fa709a, #fee140); }
+
+    .evento-card .icone {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    .evento-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .evento-card p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+    .evento-card .rodape {
+      margin-top: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 6px solid #0f3460;
-      transition: transform 0.2s;
+      border-top: 1px solid rgba(255,255,255,0.3);
+      padding-top: 10px;
     }
-    .evento-card:hover { transform: translateX(5px); }
-
-    .evento-card .info h3 {
-      color: #0f3460;
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-    .evento-card .info p {
-      color: gray;
-      font-size: 14px;
-      margin-top: 3px;
-    }
-
-    .evento-direita {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .data-badge {
-      background: linear-gradient(135deg, #0f3460, #16213e);
-      color: white;
-      padding: 10px 18px;
-      border-radius: 10px;
+    .evento-card .rodape span {
       font-size: 13px;
-      text-align: center;
-      min-width: 110px;
+      opacity: 0.9;
     }
-
-    .tag-tipo {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-    .culto { background: #d4edda; color: #155724; }
-    .louvor { background: #cce5ff; color: #004085; }
-    .missao { background: #fff3cd; color: #856404; }
-    .outro { background: #f8d7da; color: #721c24; }
-
     .btn-apagar {
-      background: #e94560;
+      background: rgba(255,255,255,0.3);
       color: white;
       border: none;
-      padding: 7px 15px;
+      padding: 5px 12px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
     }
-
-    .vazio {
-      text-align: center;
-      color: gray;
-      padding: 40px;
-      background: white;
-      border-radius: 15px;
-      font-size: 16px;
-    }
+    .btn-apagar:hover { background: rgba(255,255,255,0.5); }
   </style>
 </head>
 <body>
@@ -186,45 +161,56 @@
         <option value="culto">🙏 Culto</option>
         <option value="louvor">🎵 Louvor</option>
         <option value="missao">✈️ Missão</option>
+        <option value="estudo">📖 Estudo Bíblico</option>
         <option value="outro">📌 Outro</option>
       </select>
-      <textarea id="descricao" rows="3" placeholder="📝 Descrição do evento"></textarea>
+      <textarea id="descricao" rows="2" placeholder="📝 Descrição"></textarea>
       <button class="btn" onclick="criarEvento()">➕ Criar Evento</button>
     </div>
 
-    <div class="titulo-secao">📋 Próximos Eventos</div>
+    <div class="titulo-secao">🗓️ Próximos Eventos</div>
 
-    <div class="eventos-lista" id="lista">
-      <div class="evento-card">
-        <div class="info">
-          <h3>🙏 Culto Dominical</h3>
-          <p>📍 Templo Principal &nbsp;|&nbsp; 🕘 09:00</p>
-          <p>Culto de adoração e palavra de Deus</p>
-        </div>
-        <div class="evento-direita">
-          <div class="data-badge">📅 15/06/2026</div>
-          <span class="tag-tipo culto">Culto</span>
-          <button class="btn-apagar" onclick="apagar(this)">🗑️ Apagar</button>
+    <div class="cards-grid" id="lista">
+
+      <div class="evento-card culto">
+        <div class="icone">🙏</div>
+        <h3>Culto Dominical</h3>
+        <p>📍 Templo Principal</p>
+        <p>Culto de adoração e palavra</p>
+        <div class="rodape">
+          <span>📅 15/06 &nbsp; 🕘 09:00</span>
+          <button class="btn-apagar" onclick="apagar(this)">🗑️</button>
         </div>
       </div>
 
-      <div class="evento-card">
-        <div class="info">
-          <h3>🎵 Noite de Louvor</h3>
-          <p>📍 Salão de Eventos &nbsp;|&nbsp; 🕖 19:00</p>
-          <p>Noite especial de adoração e worship</p>
-        </div>
-        <div class="evento-direita">
-          <div class="data-badge">📅 20/06/2026</div>
-          <span class="tag-tipo louvor">Louvor</span>
-          <button class="btn-apagar" onclick="apagar(this)">🗑️ Apagar</button>
+      <div class="evento-card louvor">
+        <div class="icone">🎵</div>
+        <h3>Noite de Louvor</h3>
+        <p>📍 Salão de Eventos</p>
+        <p>Noite especial de adoração</p>
+        <div class="rodape">
+          <span>📅 20/06 &nbsp; 🕖 19:00</span>
+          <button class="btn-apagar" onclick="apagar(this)">🗑️</button>
         </div>
       </div>
+
+      <div class="evento-card estudo">
+        <div class="icone">📖</div>
+        <h3>Estudo Bíblico</h3>
+        <p>📍 Sala 3</p>
+        <p>Estudo do livro de Romanos</p>
+        <div class="rodape">
+          <span>📅 18/06 &nbsp; 🕖 19:30</span>
+          <button class="btn-apagar" onclick="apagar(this)">🗑️</button>
+        </div>
+      </div>
+
     </div>
-
   </div>
 
   <script>
+    var icones = { culto:"🙏", louvor:"🎵", missao:"✈️", estudo:"📖", outro:"📌" };
+
     function criarEvento() {
       var titulo = document.getElementById("titulo").value;
       var data = document.getElementById("data").value;
@@ -234,26 +220,21 @@
       var descricao = document.getElementById("descricao").value;
 
       if (titulo == "") {
-        alert("Digite o título do evento!");
+        alert("Digite o título!");
         return;
       }
 
-      var nomes = { culto: "Culto", louvor: "Louvor", missao: "Missão", outro: "Outro" };
-      var icones = { culto: "🙏", louvor: "🎵", missao: "✈️", outro: "📌" };
-
       var lista = document.getElementById("lista");
       var card = document.createElement("div");
-      card.className = "evento-card";
+      card.className = "evento-card " + tipo;
       card.innerHTML =
-        "<div class='info'>" +
-          "<h3>" + icones[tipo] + " " + titulo + "</h3>" +
-          "<p>📍 " + local + " &nbsp;|&nbsp; 🕐 " + hora + "</p>" +
-          "<p>" + descricao + "</p>" +
-        "</div>" +
-        "<div class='evento-direita'>" +
-          "<div class='data-badge'>📅 " + data + "</div>" +
-          "<span class='tag-tipo " + tipo + "'>" + nomes[tipo] + "</span>" +
-          "<button class='btn-apagar' onclick='apagar(this)'>🗑️ Apagar</button>" +
+        "<div class='icone'>" + icones[tipo] + "</div>" +
+        "<h3>" + titulo + "</h3>" +
+        "<p>📍 " + local + "</p>" +
+        "<p>" + descricao + "</p>" +
+        "<div class='rodape'>" +
+          "<span>📅 " + data + " &nbsp; 🕐 " + hora + "</span>" +
+          "<button class='btn-apagar' onclick='apagar(this)'>🗑️</button>" +
         "</div>";
 
       lista.appendChild(card);
