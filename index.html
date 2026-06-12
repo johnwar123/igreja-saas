@@ -1,101 +1,231 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Igreja SaaS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Arial;
-      }
-      .card {
-        background: white;
-        padding: 40px;
-        border-radius: 15px;
-        width: 380px;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      }
-      .logo {
-        font-size: 60px;
-        margin-bottom: 10px;
-      }
-      h1 {
-        color: #1a1a2e;
-        font-size: 24px;
-        margin-bottom: 5px;
-      }
-      p {
-        color: gray;
-        font-size: 14px;
-        margin-bottom: 30px;
-      }
-      input {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 2px solid #eee;
-        border-radius: 8px;
-        font-size: 16px;
-      }
-      input:focus {
-        border-color: #0f3460;
-        outline: none;
-      }
-      button {
-        width: 100%;
-        padding: 12px;
-        background: #0f3460;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 10px;
-      }
-      button:hover {
-        background: #16213e;
-      }
-      .erro {
-        color: red;
-        font-size: 14px;
-        margin-top: 10px;
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="card">
+<head>
+  <title>Igreja Fácil - Igreja SaaS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f0f2f5; font-family: Arial; }
+
+    header {
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 20px; }
+
+    .container {
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .titulo-secao {
+      color: #0f3460;
+      font-size: 22px;
+      font-weight: bold;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 8px;
+      margin: 25px 0 20px;
+    }
+
+    .login-card {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      max-width: 400px;
+      margin: 40px auto;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+
+    .login-card h2 {
+      color: #0f3460;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .login-card p {
+      color: gray;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      color: #0f3460;
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0f3460;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(15, 52, 96, 0.3);
+    }
+
+    .erro {
+      color: #e94560;
+      font-size: 14px;
+      margin-top: 15px;
+      display: none;
+      padding: 10px;
+      background: #ffe5e5;
+      border-radius: 8px;
+      border-left: 4px solid #e94560;
+    }
+
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .resumo-card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      border-top: 4px solid #0f3460;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .resumo-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .resumo-card .icone { font-size: 35px; margin-bottom: 10px; }
+    .resumo-card p { color: gray; font-size: 13px; }
+    .resumo-card h3 { color: #0f3460; font-size: 18px; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>✝️ Igreja Fácil</h1>
+  </header>
+
+  <div class="container">
+
+    <div class="login-card">
       <div class="logo">✝️</div>
-      <h1>Igreja Fácil</h1>
+      <h2>Bem-vindo!</h2>
       <p>Sistema de gestão para igrejas</p>
 
-      <input type="text" id="usuario" placeholder="Usuário">
-      <input type="password" id="senha" placeholder="Senha">
-      <button onclick="login()">Entrar</button>
-      <p class="erro" id="erro">Usuário ou senha incorretos!</p>
+      <div class="form-group">
+        <label for="usuario">Usuário</label>
+        <input type="text" id="usuario" placeholder="Digite seu usuário">
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="Digite sua senha">
+      </div>
+
+      <button class="login-btn" onclick="login()">Entrar</button>
+      <div class="erro" id="erro">⚠️ Usuário ou senha incorretos!</div>
     </div>
 
-    <script>
-      function login() {
-        var usuario = document.getElementById("usuario").value;
-        var senha = document.getElementById("senha").value;
+    <div class="titulo-secao">📊 Funcionalidades</div>
 
-        if (usuario == "admin" && senha == "igreja123") {
-          window.location.href = "dashboard.html";
-        } else {
-          document.getElementById("erro").style.display = "block";
-        }
+    <div class="resumo">
+      <div class="resumo-card">
+        <div class="icone">📋</div>
+        <p>Dashboard</p>
+        <h3>Painel Principal</h3>
+      </div>
+      <div class="resumo-card">
+        <div class="icone">💰</div>
+        <p>Dízimos</p>
+        <h3>Controle Financeiro</h3>
+      </div>
+      <div class="resumo-card">
+        <div class="icone">👥</div>
+        <p>Membros</p>
+        <h3>Gerenciar Membros</h3>
+      </div>
+      <div class="resumo-card">
+        <div class="icone">📅</div>
+        <p>Eventos</p>
+        <h3>Agendar Eventos</h3>
+      </div>
+      <div class="resumo-card">
+        <div class="icone">📊</div>
+        <p>Relatórios</p>
+        <h3>Análise de Dados</h3>
+      </div>
+      <div class="resumo-card">
+        <div class="icone">⚙️</div>
+        <p>Configurações</p>
+        <h3>Personalizar Sistema</h3>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function login() {
+      var usuario = document.getElementById("usuario").value;
+      var senha = document.getElementById("senha").value;
+
+      if (usuario == "admin" && senha == "igreja123") {
+        window.location.href = "dashboard.html";
+      } else {
+        document.getElementById("erro").style.display = "block";
       }
-    </script>
-  </body>
+    }
+
+    // Permitir login com Enter
+    document.getElementById("senha").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        login();
+      }
+    });
+  </script>
+
+</body>
 </html>
