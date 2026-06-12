@@ -211,6 +211,36 @@
   <script>
     var icones = { culto:"🙏", louvor:"🎵", missao:"✈️", estudo:"📖", outro:"📌" };
 
+    // ✅ NOVO: Carregar eventos salvos quando a página abre
+    function carregarEventos() {
+      var eventosSalvos = localStorage.getItem("eventos");
+      if (eventosSalvos) {
+        var eventos = JSON.parse(eventosSalvos);
+        var lista = document.getElementById("lista");
+        
+        eventos.forEach(function(evento) {
+          var card = criarCardEvento(evento);
+          lista.appendChild(card);
+        });
+      }
+    }
+
+    // ✅ NOVO: Função auxiliar para criar o card
+    function criarCardEvento(evento) {
+      var card = document.createElement("div");
+      card.className = "evento-card " + evento.tipo;
+      card.innerHTML =
+        "<div class='icone'>" + icones[evento.tipo] + "</div>" +
+        "<h3>" + evento.titulo + "</h3>" +
+        "<p>📍 " + evento.local + "</p>" +
+        "<p>" + evento.descricao + "</p>" +
+        "<div class='rodape'>" +
+          "<span>📅 " + evento.data + " &nbsp; 🕐 " + evento.hora + "</span>" +
+          "<button class='btn-apagar' onclick='apagar(this)'>🗑️</button>" +
+        "</div>";
+      return card;
+    }
+
     function criarEvento() {
       var titulo = document.getElementById("titulo").value;
       var data = document.getElementById("data").value;
@@ -224,29 +254,81 @@
         return;
       }
 
-      var lista = document.getElementById("lista");
-      var card = document.createElement("div");
-      card.className = "evento-card " + tipo;
-      card.innerHTML =
-        "<div class='icone'>" + icones[tipo] + "</div>" +
-        "<h3>" + titulo + "</h3>" +
-        "<p>📍 " + local + "</p>" +
-        "<p>" + descricao + "</p>" +
-        "<div class='rodape'>" +
-          "<span>📅 " + data + " &nbsp; 🕐 " + hora + "</span>" +
-          "<button class='btn-apagar' onclick='apagar(this)'>🗑️</button>" +
-        "</div>";
+      // ✅ NOVO: Criar objeto com os dados do evento
+      var novoEvento = {
+        titulo: titulo,
+        data: data,
+        hora: hora,
+        local: local,
+        tipo: tipo,
+        descricao: descricao
+      };
 
+      // ✅ NOVO: Salvar no localStorage
+      var eventosSalvos = localStorage.getItem("eventos");
+      var eventos = eventosSalvos ? JSON.parse(eventosSalvos) : [];
+      eventos.push(novoEvento);
+      localStorage.setItem("eventos", JSON.stringify(eventos));
+
+      // ✅ NOVO: Usar a função para criar o card
+      var lista = document.getElementById("lista");
+      var card = criarCardEvento(novoEvento);
       lista.appendChild(card);
 
+      // Limpar campos
       document.getElementById("titulo").value = "";
       document.getElementById("local").value = "";
       document.getElementById("descricao").value = "";
+      document.getElementById("data").value = "";
+      document.getElementById("hora").value = "";
     }
 
     function apagar(btn) {
       btn.parentElement.parentElement.remove();
+      // ✅ NOVO: Também atualizar o localStorage ao apagar
+      salvarEventosAtual();
     }
+
+    // ✅ NOVO: Função para salvar os eventos atuais do DOM no localStorage
+    function salvarEventosAtual() {
+      var cards = document.querySelectorAll(".evento-card");
+      var eventos = [];
+      
+      cards.forEach(function(card) {
+        var titulo = card.querySelector("h3").textContent;
+        var tipo = "";
+        if (card.classList.contains("culto")) tipo = "culto";
+        else if (card.classList.contains("louvor")) tipo = "louvor";
+        else if (card.classList.contains("missao")) tipo = "missao";
+        else if (card.classList.contains("estudo")) tipo = "estudo";
+        else if (card.classList.contains("outro")) tipo = "outro";
+        
+        var paragrafos = card.querySelectorAll("p");
+        var local = paragrafos[0] ? paragrafos[0].textContent.replace("📍 ", "") : "";
+        var descricao = paragrafos[1] ? paragrafos[1].textContent : "";
+        
+        var rodape = card.querySelector(".rodape span").textContent;
+        var partes = rodape.split("&nbsp;");
+        var data = partes[0].replace("📅 ", "").trim();
+        var hora = partes[1] ? partes[1].replace("🕐 ", "").replace("🕘 ", "").trim() : "";
+        
+        eventos.push({
+          titulo: titulo,
+          data: data,
+          hora: hora,
+          local: local,
+          tipo: tipo,
+          descricao: descricao
+        });
+      });
+      
+      localStorage.setItem("eventos", JSON.stringify(eventos));
+    }
+
+    // ✅ NOVO: Executar ao carregar a página
+    window.addEventListener("DOMContentLoaded", function() {
+      carregarEventos();
+    });
   </script>
 
 </body>
