@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Igreja SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial;
+      }
+      .card {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        width: 380px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+      .logo {
+        font-size: 60px;
+        margin-bottom: 10px;
+      }
+      h1 {
+        color: #1a1a2e;
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+      p {
+        color: gray;
+        font-size: 14px;
+        margin-bottom: 30px;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+      input:focus {
+        border-color: #0f3460;
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        background: #0f3460;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #16213e;
+      }
+      .erro {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">✝️</div>
+      <h1>Igreja SaaS</h1>
+      <p>Sistema de gestão para igrejas</p>
+
+      <input type="text" id="usuario" placeholder="Usuário">
+      <input type="password" id="senha" placeholder="Senha">
+      <button onclick="login()">Entrar</button>
+      <p class="erro" id="erro">Usuário ou senha incorretos!</p>
+    </div>
+
+    <script>
+      function login() {
+        var usuario = document.getElementById("usuario").value;
+        var senha = document.getElementById("senha").value;
+
+        if (usuario == "admin" && senha == "igreja123") {
+          window.location.href = "dashboard.html";
+        } else {
+          document.getElementById("erro").style.display = "block";
+        }
+      }
+    </script>
+  </body>
+</html>
