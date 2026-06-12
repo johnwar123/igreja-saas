@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Membros - Igreja SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #f0f2f5; font-family: Arial; }
+      header {
+        background: #0f3460;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header button {
+        background: #e94560;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .container {
+        padding: 30px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      h2 {
+        color: #0f3460;
+        margin-bottom: 20px;
+      }
+      .formulario {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      input, select {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 15px;
+      }
+      input:focus, select:focus {
+        border-color: #0f3460;
+        outline: none;
+      }
+      .btn {
+        background: #0f3460;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        margin-top: 10px;
+      }
+      table {
+        width: 100%;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-collapse: collapse;
+      }
+      th {
+        background: #0f3460;
+        color: white;
+        padding: 15px;
+        text-align: left;
+      }
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+      }
+      tr:hover {
+        background: #f0f2f5;
+      }
+      .tag {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .ativo { background: #d4edda; color: #155724; }
+      .inativo { background: #f8d7da; color: #721c24; }
+      .btn-apagar {
+        background: #e94560;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>✝️ Igreja Fácil — Membros</h1>
+      <button onclick="location.href='dashboard.html'">← Voltar</button>
+    </header>
+
+    <div class="container">
+      <h2>👥 Cadastrar Novo Membro</h2>
+
+      <div class="formulario">
+        <input type="text" id="nome" placeholder="Nome completo">
+        <input type="tel" id="telefone" placeholder="Telefone">
+        <input type="email" id="email" placeholder="Email">
+        <select id="status">
+          <option value="Ativo">Ativo</option>
+          <option value="Inativo">Inativo</option>
+        </select>
+        <button class="btn" onclick="cadastrar()">➕ Cadastrar Membro</button>
+      </div>
+
+      <h2>📋 Lista de Membros</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="tabela">
+          <tr>
+            <td>1</td>
+            <td>João Silva</td>
+            <td>(85) 99999-1111</td>
+            <td>joao@email.com</td>
+            <td><span class="tag ativo">Ativo</span></td>
+            <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Maria Santos</td>
+            <td>(85) 99999-2222</td>
+            <td>maria@email.com</td>
+            <td><span class="tag ativo">Ativo</span></td>
+            <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      var contador = 3;
+
+      function cadastrar() {
+        var nome = document.getElementById("nome").value;
+        var telefone = document.getElementById("telefone").value;
+        var email = document.getElementById("email").value;
+        var status = document.getElementById("status").value;
+
+        if (nome == "") {
+          alert("Digite o nome do membro!");
+          return;
+        }
+
+        var tabela = document.getElementById("tabela");
+        var linha = tabela.insertRow();
+        var cor = status == "Ativo" ? "ativo" : "inativo";
+
+        linha.innerHTML = `
+          <td>${contador}</td>
+          <td>${nome}</td>
+          <td>${telefone}</td>
+          <td>${email}</td>
+          <td><span class="tag ${cor}">${status}</span></td>
+          <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
+        `;
+
+        contador++;
+        document.getElementById("nome").value = "";
+        document.getElementById("telefone").value = "";
+        document.getElementById("email").value = "";
+      }
+
+      function apagar(btn) {
+        var linha = btn.parentElement.parentElement;
+        linha.remove();
+      }
+    </script>
+  </body>
+</html>
