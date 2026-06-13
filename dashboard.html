@@ -1,141 +1,130 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Dashboard - Igreja SaaS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background: #f0f2f5;
-        font-family: Arial;
-      }
-      header {
-        background: #0f3460;
-        color: white;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      header h1 {
-        font-size: 22px;
-      }
-      header button {
-        background: #e94560;
-        color: white;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-      .bemvindo {
-        background: #0f3460;
-        color: white;
-        padding: 20px 30px;
-        font-size: 16px;
-      }
-      .cards {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        padding: 30px;
-        justify-content: center;
-      }
-      .card {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        width: 200px;
-        text-align: center;
-        cursor: pointer;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
-      }
-      .card:hover {
-        transform: translateY(-5px);
-      }
-      .card .icone {
-        font-size: 50px;
-        margin-bottom: 10px;
-      }
-      .card h3 {
-        color: #1a1a2e;
-        font-size: 16px;
-        margin-bottom: 5px;
-      }
-      .card p {
-        color: gray;
-        font-size: 13px;
-      }
-      .card .numero {
-        font-size: 30px;
-        font-weight: bold;
-        color: #0f3460;
-        margin-top: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>✝️ Igreja Fácil</h1>
-      <button onclick="sair()">Sair</button>
-    </header>
-    <div class="bemvindo">
-      👋 Bem-vindo, Pastor! Hoje é um ótimo dia para servir.
+<head>
+  <title>Dashboard - Igreja SaaS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f0f2f5; font-family: Arial; }
+    header {
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 22px; }
+    header button {
+      background: #e94560;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .bemvindo {
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      color: white;
+      padding: 20px 30px;
+      font-size: 16px;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 30px;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      width: 200px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+      border-top: 4px solid #0f3460;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card .icone { font-size: 50px; margin-bottom: 10px; }
+    .card h3 { color: #1a1a2e; font-size: 16px; margin-bottom: 5px; }
+    .card p { color: gray; font-size: 13px; }
+    .card .numero {
+      font-size: 30px;
+      font-weight: bold;
+      color: #0f3460;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✝️ Igreja SaaS</h1>
+    <button onclick="sair()">Sair</button>
+  </header>
+  <div class="bemvindo">
+    👋 Bem-vindo, Pastor! Hoje é um ótimo dia para servir.
+  </div>
+
+  <div class="cards">
+    <div class="card" onclick="location.href='membros.html'">
+      <div class="icone">👥</div>
+      <h3>Membros</h3>
+      <p>Cadastro de membros</p>
+      <div class="numero" id="num-membros">0</div>
     </div>
 
-    <div class="cards">
-      <div class="card" onclick="location.href='membros.html'">
-        <div class="icone">👥</div>
-        <h3>Membros</h3>
-        <p>Cadastro de membros</p>
-        <div class="numero">248</div>
-      </div>
-
-      <div class="card" onclick="location.href='dizimos.html'">
-        <div class="icone">💰</div>
-        <h3>Dízimos</h3>
-        <p>Controle financeiro</p>
-        <div class="numero">R$12.500</div>
-      </div>
-
-      <div class="card" onclick="location.href='evento.html'">
-        <div class="icone">📅</div>
-        <h3>Eventos</h3>
-        <p>Agenda da igreja</p>
-        <div class="numero">5</div>
-      </div>
-
-      <div class="card" onclick="location.href='relatorio.html'">
-        <div class="icone">📊</div>
-        <h3>Relatórios</h3>
-        <p>Análises e gráficos</p>
-        <div class="numero">↗️</div>
-      </div>
-
-     <<div class="card" onclick="location.href='liturgia.html'">
-  <div class="icone">📖</div>
-  <h3>Liturgia</h3>
-  <p>Ordem do culto</p>
-  <div class="numero">↗️</div>
-</div>
-      <div class="card" onclick="location.href='comunicados.html'">
-        <div class="icone">📢</div>
-        <h3>Comunicados</h3>
-        <p>Avisos para membros</p>
-        <div class="numero">3</div>
-      </div>
+    <div class="card" onclick="location.href='dizimos.html'">
+      <div class="icone">💰</div>
+      <h3>Dízimos</h3>
+      <p>Controle financeiro</p>
+      <div class="numero" id="num-dizimos">R$0</div>
     </div>
 
-    <script>
-      function sair() {
-        window.location.href = "index.html";
-      }
-    </script>
-  </body>
+    <div class="card" onclick="location.href='eventos.html'">
+      <div class="icone">📅</div>
+      <h3>Eventos</h3>
+      <p>Agenda da igreja</p>
+      <div class="numero" id="num-eventos">0</div>
+    </div>
+
+    <div class="card" onclick="location.href='relatorios.html'">
+      <div class="icone">📊</div>
+      <h3>Relatórios</h3>
+      <p>Análises e gráficos</p>
+      <div class="numero">↗️</div>
+    </div>
+
+    <div class="card" onclick="location.href='louvor.html'">
+      <div class="icone">🎵</div>
+      <h3>Louvor</h3>
+      <p>Repertório de músicas</p>
+      <div class="numero" id="num-louvor">0</div>
+    </div>
+
+    <div class="card" onclick="location.href='comunicados.html'">
+      <div class="icone">📢</div>
+      <h3>Comunicados</h3>
+      <p>Avisos para membros</p>
+      <div class="numero" id="num-comunicados">0</div>
+    </div>
+  </div>
+
+  <script>
+    function sair() {
+      window.location.href = "index.html";
+    }
+
+    // Carregar números salvos
+    document.getElementById("num-membros").innerHTML = localStorage.getItem("total-membros") || 0;
+    document.getElementById("num-dizimos").innerHTML = "R$" + (localStorage.getItem("total-dizimos") || 0);
+    document.getElementById("num-eventos").innerHTML = localStorage.getItem("total-eventos") || 0;
+    document.getElementById("num-louvor").innerHTML = localStorage.getItem("total-louvor") || 0;
+    document.getElementById("num-comunicados").innerHTML = localStorage.getItem("total-comunicados") || 0;
+  </script>
+</body>
 </html>
