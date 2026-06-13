@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Liturgia - Igreja SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #f0f2f5; font-family: Arial; }
+      header {
+        background: #0f3460; color: white; padding: 15px 30px;
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      header h1 { font-size: 22px; }
+      header button {
+        background: #e94560; color: white; border: none;
+        padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;
+      }
+      .conteudo { padding: 30px; max-width: 700px; margin: 0 auto; }
+      .item {
+        background: white; border-radius: 12px; padding: 15px 20px;
+        margin-bottom: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .item input[type="text"] {
+        border: none; font-size: 15px; flex: 1; outline: none; background: transparent;
+      }
+      .item .ordem {
+        background: #0f3460; color: white; border-radius: 50%;
+        width: 28px; height: 28px; display: flex; align-items: center;
+        justify-content: center; font-size: 13px; margin-right: 15px; flex-shrink: 0;
+      }
+      .item button.remover {
+        background: none; border: none; color: #e94560; font-size: 18px; cursor: pointer;
+      }
+      .add-area {
+        display: flex; gap: 10px; margin-top: 20px;
+      }
+      .add-area input {
+        flex: 1; padding: 10px 15px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;
+      }
+      .add-area button {
+        background: #0f3460; color: white; border: none; padding: 10px 20px;
+        border-radius: 8px; cursor: pointer; font-size: 14px;
+      }
+      .salvar {
+        margin-top: 20px; background: #28a745; color: white; border: none;
+        padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; width: 100%;
+      }
+      h2 { margin-bottom: 20px; color: #1a1a2e; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>✝️ Igreja Fácil</h1>
+      <button onclick="location.href='dashboard.html'">Voltar</button>
+    </header>
+    <div class="conteudo">
+      <h2>📖 Liturgia do Culto</h2>
+      <div id="lista"></div>
+      <div class="add-area">
+        <input type="text" id="novoItem" placeholder="Ex: Louvor inicial, Oração, Leitura bíblica...">
+        <button onclick="adicionarItem()">Adicionar</button>
+      </div>
+      <button class="salvar" onclick="salvar()">Salvar Liturgia</button>
+    </div>
+
+    <script>
+      let itens = JSON.parse(localStorage.getItem('liturgia')) || [
+        "Abertura e oração inicial",
+        "Louvor e adoração",
+        "Avisos e comunicados",
+        "Leitura bíblica",
+        "Mensagem / Pregação",
+        "Oração final e bênção"
+      ];
+
+      function renderizar() {
+        const lista = document.getElementById('lista');
+        lista.innerHTML = '';
+        itens.forEach((item, i) => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <div style="display:flex; align-items:center; flex:1;">
+              <div class="ordem">${i + 1}</div>
+              <input type="text" value="${item}" onchange="editarItem(${i}, this.value)">
+            </div>
+            <button class="remover" onclick="removerItem(${i})">✕</button>
+          `;
+          lista.appendChild(div);
+        });
+      }
+
+      function adicionarItem() {
+        const input = document.getElementById('novoItem');
+        if (input.value.trim() === '') return;
+        itens.push(input.value.trim());
+        input.value = '';
+        renderizar();
+      }
+
+      function editarItem(i, valor) {
+        itens[i] = valor;
+      }
+
+      function removerItem(i) {
+        itens.splice(i, 1);
+        renderizar();
+      }
+
+      function salvar() {
+        localStorage.setItem('liturgia', JSON.stringify(itens));
+        alert('Liturgia salva com sucesso!');
+      }
+
+      renderizar();
+    </script>
+  </body>
+</html>

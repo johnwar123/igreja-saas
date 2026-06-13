@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Comunicados - Igreja SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #f0f2f5; font-family: Arial; }
+      header {
+        background: #0f3460; color: white; padding: 15px 30px;
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      header h1 { font-size: 22px; }
+      header button {
+        background: #e94560; color: white; border: none;
+        padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;
+      }
+      .conteudo { padding: 30px; max-width: 700px; margin: 0 auto; }
+      h2 { margin-bottom: 20px; color: #1a1a2e; }
+      .form-area {
+        background: white; border-radius: 12px; padding: 20px;
+        margin-bottom: 25px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      }
+      .form-area input, .form-area textarea {
+        width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+        margin-bottom: 10px; font-size: 14px; font-family: Arial;
+      }
+      .form-area textarea { resize: vertical; min-height: 80px; }
+      .form-area button {
+        background: #0f3460; color: white; border: none; padding: 10px 20px;
+        border-radius: 8px; cursor: pointer; font-size: 14px; width: 100%;
+      }
+      .comunicado {
+        background: white; border-radius: 12px; padding: 15px 20px;
+        margin-bottom: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        position: relative;
+      }
+      .comunicado h4 { color: #0f3460; margin-bottom: 5px; }
+      .comunicado p { color: #333; font-size: 14px; margin-bottom: 8px; }
+      .comunicado .data { color: gray; font-size: 12px; }
+      .comunicado button.remover {
+        position: absolute; top: 10px; right: 15px;
+        background: none; border: none; color: #e94560; font-size: 18px; cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>✝️ Igreja Fácil</h1>
+      <button onclick="location.href='dashboard.html'">Voltar</button>
+    </header>
+    <div class="conteudo">
+      <h2>📢 Comunicados</h2>
+
+      <div class="form-area">
+        <input type="text" id="titulo" placeholder="Título do comunicado">
+        <textarea id="mensagem" placeholder="Mensagem para os membros..."></textarea>
+        <button onclick="adicionarComunicado()">Publicar Comunicado</button>
+      </div>
+
+      <div id="lista"></div>
+    </div>
+
+    <script>
+      let comunicados = JSON.parse(localStorage.getItem('comunicados')) || [
+        { titulo: "Culto de Oração", mensagem: "Não esqueça do culto de oração nesta quarta às 19h30.", data: "10/06/2026" },
+        { titulo: "Mutirão de Limpeza", mensagem: "Precisamos de voluntários no sábado para o mutirão de limpeza do templo.", data: "08/06/2026" },
+        { titulo: "Aniversariantes do Mês", mensagem: "Confira a lista de aniversariantes de junho no mural da igreja.", data: "01/06/2026" }
+      ];
+
+      function renderizar() {
+        const lista = document.getElementById('lista');
+        lista.innerHTML = '';
+        comunicados.forEach((c, i) => {
+          const div = document.createElement('div');
+          div.className = 'comunicado';
+          div.innerHTML = `
+            <button class="remover" onclick="removerComunicado(${i})">✕</button>
+            <h4>${c.titulo}</h4>
+            <p>${c.mensagem}</p>
+            <div class="data">${c.data}</div>
+          `;
+          lista.appendChild(div);
+        });
+      }
+
+      function adicionarComunicado() {
+        const titulo = document.getElementById('titulo').value.trim();
+        const mensagem = document.getElementById('mensagem').value.trim();
+        if (!titulo || !mensagem) {
+          alert('Preencha o título e a mensagem.');
+          return;
+        }
+        const hoje = new Date();
+        const data = `${String(hoje.getDate()).padStart(2,'0')}/${String(hoje.getMonth()+1).padStart(2,'0')}/${hoje.getFullYear()}`;
+        comunicados.unshift({ titulo, mensagem, data });
+        document.getElementById('titulo').value = '';
+        document.getElementById('mensagem').value = '';
+        salvar();
+        renderizar();
+      }
+
+      function removerComunicado(i) {
+        comunicados.splice(i, 1);
+        salvar();
+        renderizar();
+      }
+
+      function salvar() {
+        localStorage.setItem('comunicados', JSON.stringify(comunicados));
+      }
+
+      renderizar();
+    </script>
+  </body>
+</html>
