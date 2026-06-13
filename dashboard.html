@@ -112,6 +112,13 @@
       <p>Avisos para membros</p>
       <div class="numero" id="num-comunicados">0</div>
     </div>
+
+    <div class="card" onclick="location.href='liturgia.html'">
+      <div class="icone">📖</div>
+      <h3>Liturgia</h3>
+      <p>Ordem do culto</p>
+      <div class="numero" id="num-liturgia">0</div>
+    </div>
   </div>
 
   <script>
@@ -119,12 +126,12 @@
       window.location.href = "index.html";
     }
 
-    // Carregar números salvos
     document.getElementById("num-membros").innerHTML = localStorage.getItem("total-membros") || 0;
     document.getElementById("num-dizimos").innerHTML = "R$" + (localStorage.getItem("total-dizimos") || 0);
     document.getElementById("num-eventos").innerHTML = localStorage.getItem("total-eventos") || 0;
     document.getElementById("num-louvor").innerHTML = localStorage.getItem("total-louvor") || 0;
     document.getElementById("num-comunicados").innerHTML = localStorage.getItem("total-comunicados") || 0;
+    document.getElementById("num-liturgia").innerHTML = localStorage.getItem("total-liturgia") || 0;
   </script>
 </body>
 </html>
