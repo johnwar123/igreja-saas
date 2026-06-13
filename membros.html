@@ -7,263 +7,132 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { background: #f0f2f5; font-family: Arial; }
       header {
-        background: #0f3460;
-        color: white;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        background: #0f3460; color: white; padding: 15px 30px;
+        display: flex; justify-content: space-between; align-items: center;
       }
+      header h1 { font-size: 22px; }
       header button {
-        background: #e94560;
-        color: white;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 8px;
-        cursor: pointer;
+        background: #e94560; color: white; border: none;
+        padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;
       }
-      .container {
-        padding: 30px;
-        max-width: 900px;
-        margin: 0 auto;
+      .conteudo { padding: 30px; max-width: 800px; margin: 0 auto; }
+      h2 { margin-bottom: 20px; color: #1a1a2e; }
+      .form-area {
+        background: white; border-radius: 12px; padding: 20px;
+        margin-bottom: 25px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
       }
-      h2 {
-        color: #0f3460;
-        margin-bottom: 20px;
+      .form-area input, .form-area select {
+        width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
       }
-      .formulario {
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        margin-bottom: 30px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      .form-area button {
+        background: #0f3460; color: white; border: none; padding: 10px 20px;
+        border-radius: 8px; cursor: pointer; font-size: 14px;
+        grid-column: span 2;
       }
-      input, select {
-        width: 100%;
-        padding: 10px;
-        margin: 8px 0;
-        border: 2px solid #eee;
-        border-radius: 8px;
-        font-size: 15px;
-      }
-      input:focus, select:focus {
-        border-color: #0f3460;
-        outline: none;
-      }
-      .btn {
-        background: #0f3460;
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 15px;
-        margin-top: 10px;
+      .contador {
+        background: #0f3460; color: white; border-radius: 12px; padding: 15px 20px;
+        margin-bottom: 20px; font-size: 18px; font-weight: bold; text-align: center;
       }
       table {
-        width: 100%;
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        border-collapse: collapse;
+        width: 100%; border-collapse: collapse; background: white;
+        border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       }
-      th {
-        background: #0f3460;
-        color: white;
-        padding: 15px;
-        text-align: left;
-      }
-      td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #eee;
-      }
-      tr:hover {
-        background: #f0f2f5;
-      }
-      .tag {
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-      }
-      .ativo { background: #d4edda; color: #155724; }
-      .inativo { background: #f8d7da; color: #721c24; }
-      .btn-apagar {
-        background: #e94560;
-        color: white;
-        border: none;
-        padding: 5px 12px;
-        border-radius: 5px;
-        cursor: pointer;
+      th, td { padding: 12px 15px; text-align: left; font-size: 14px; }
+      th { background: #0f3460; color: white; }
+      tr:nth-child(even) { background: #f7f7f7; }
+      .remover {
+        background: none; border: none; color: #e94560; font-size: 16px; cursor: pointer;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>✝️ Igreja Fácil — Membros</h1>
-      <button onclick="location.href='dashboard.html'">← Voltar</button>
+      <h1>✝️ Igreja Fácil</h1>
+      <button onclick="location.href='dashboard.html'">Voltar</button>
     </header>
+    <div class="conteudo">
+      <h2>👥 Membros</h2>
 
-    <div class="container">
-      <h2>👥 Cadastrar Novo Membro</h2>
+      <div class="contador">Total de membros: <span id="total">0</span></div>
 
-      <div class="formulario">
+      <div class="form-area">
         <input type="text" id="nome" placeholder="Nome completo">
-        <input type="tel" id="telefone" placeholder="Telefone">
-        <input type="email" id="email" placeholder="Email">
+        <input type="text" id="telefone" placeholder="Telefone">
+        <input type="email" id="email" placeholder="E-mail (opcional)">
         <select id="status">
           <option value="Ativo">Ativo</option>
           <option value="Inativo">Inativo</option>
         </select>
-        <button class="btn" onclick="cadastrar()">➕ Cadastrar Membro</button>
+        <button onclick="adicionarMembro()">Adicionar Membro</button>
       </div>
 
-      <h2>📋 Lista de Membros</h2>
       <table>
         <thead>
           <tr>
-            <th>#</th>
             <th>Nome</th>
             <th>Telefone</th>
-            <th>Email</th>
+            <th>E-mail</th>
             <th>Status</th>
-            <th>Ação</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id="tabela">
-          <tr>
-            <td>1</td>
-            <td>João Silva</td>
-            <td>(85) 99999-1111</td>
-            <td>joao@email.com</td>
-            <td><span class="tag ativo">Ativo</span></td>
-            <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Maria Santos</td>
-            <td>(85) 99999-2222</td>
-            <td>maria@email.com</td>
-            <td><span class="tag ativo">Ativo</span></td>
-            <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
-          </tr>
-        </tbody>
+        <tbody id="lista"></tbody>
       </table>
     </div>
 
     <script>
-      var contador = 3;
+      let membros = JSON.parse(localStorage.getItem('membros')) || [];
 
-      // ✅ NOVO: Carregar membros salvos quando a página abre
-      function carregarMembros() {
-        var membrosSalvos = localStorage.getItem("membros");
-        if (membrosSalvos) {
-          var membros = JSON.parse(membrosSalvos);
-          var tabela = document.getElementById("tabela");
-          
-          membros.forEach(function(membro) {
-            var linha = tabela.insertRow();
-            var cor = membro.status == "Ativo" ? "ativo" : "inativo";
-            
-            linha.innerHTML = `
-              <td>${membro.id}</td>
-              <td>${membro.nome}</td>
-              <td>${membro.telefone}</td>
-              <td>${membro.email}</td>
-              <td><span class="tag ${cor}">${membro.status}</span></td>
-              <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
-            `;
-            
-            if (membro.id >= contador) {
-              contador = membro.id + 1;
-            }
-          });
-        }
+      function renderizar() {
+        const lista = document.getElementById('lista');
+        lista.innerHTML = '';
+        membros.forEach((m, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${m.nome}</td>
+            <td>${m.telefone}</td>
+            <td>${m.email || '-'}</td>
+            <td>${m.status}</td>
+            <td><button class="remover" onclick="removerMembro(${i})">✕</button></td>
+          `;
+          lista.appendChild(tr);
+        });
+        document.getElementById('total').textContent = membros.length;
       }
 
-      function cadastrar() {
-        var nome = document.getElementById("nome").value;
-        var telefone = document.getElementById("telefone").value;
-        var email = document.getElementById("email").value;
-        var status = document.getElementById("status").value;
+      function adicionarMembro() {
+        const nome = document.getElementById('nome').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const status = document.getElementById('status').value;
 
-        if (nome == "") {
-          alert("Digite o nome do membro!");
+        if (!nome || !telefone) {
+          alert('Preencha nome e telefone.');
           return;
         }
 
-        // ✅ NOVO: Criar objeto com os dados do membro
-        var novoMembro = {
-          id: contador,
-          nome: nome,
-          telefone: telefone,
-          email: email,
-          status: status
-        };
+        membros.push({ nome, telefone, email, status });
+        salvar();
+        renderizar();
 
-        // ✅ NOVO: Salvar no localStorage
-        var membrosSalvos = localStorage.getItem("membros");
-        var membros = membrosSalvos ? JSON.parse(membrosSalvos) : [];
-        membros.push(novoMembro);
-        localStorage.setItem("membros", JSON.stringify(membros));
-
-        var tabela = document.getElementById("tabela");
-        var linha = tabela.insertRow();
-        var cor = status == "Ativo" ? "ativo" : "inativo";
-
-        linha.innerHTML = `
-          <td>${contador}</td>
-          <td>${nome}</td>
-          <td>${telefone}</td>
-          <td>${email}</td>
-          <td><span class="tag ${cor}">${status}</span></td>
-          <td><button class="btn-apagar" onclick="apagar(this)">🗑️</button></td>
-        `;
-
-        contador++;
-        document.getElementById("nome").value = "";
-        document.getElementById("telefone").value = "";
-        document.getElementById("email").value = "";
+        document.getElementById('nome').value = '';
+        document.getElementById('telefone').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('status').value = 'Ativo';
       }
 
-      function apagar(btn) {
-        var linha = btn.parentElement.parentElement;
-        var id = parseInt(linha.cells[0].textContent);
-        linha.remove();
-        
-        // ✅ NOVO: Atualizar localStorage ao apagar
-        salvarMembrosAtual();
+      function removerMembro(i) {
+        membros.splice(i, 1);
+        salvar();
+        renderizar();
       }
 
-      // ✅ NOVO: Função para salvar os membros atuais do DOM no localStorage
-      function salvarMembrosAtual() {
-        var linhas = document.querySelectorAll("#tabela tr");
-        var membros = [];
-        
-        linhas.forEach(function(linha) {
-          var id = parseInt(linha.cells[0].textContent);
-          var nome = linha.cells[1].textContent;
-          var telefone = linha.cells[2].textContent;
-          var email = linha.cells[3].textContent;
-          var status = linha.cells[4].textContent.trim();
-          
-          membros.push({
-            id: id,
-            nome: nome,
-            telefone: telefone,
-            email: email,
-            status: status
-          });
-        });
-        
-        localStorage.setItem("membros", JSON.stringify(membros));
+      function salvar() {
+        localStorage.setItem('membros', JSON.stringify(membros));
       }
 
-      // ✅ NOVO: Executar ao carregar a página
-      window.addEventListener("DOMContentLoaded", function() {
-        carregarMembros();
-      });
+      renderizar();
     </script>
   </body>
 </html>
