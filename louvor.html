@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Louvor - Igreja SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #f0f2f5; font-family: Arial; }
+      header {
+        background: #0f3460; color: white; padding: 15px 30px;
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      header h1 { font-size: 22px; }
+      header button {
+        background: #e94560; color: white; border: none;
+        padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;
+      }
+      .conteudo { padding: 30px; max-width: 900px; margin: 0 auto; }
+      h2 { margin-bottom: 20px; color: #1a1a2e; }
+      .form-area {
+        background: white; border-radius: 12px; padding: 20px;
+        margin-bottom: 25px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+      }
+      .form-area input, .form-area select, .form-area textarea {
+        width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
+      }
+      .form-area textarea { grid-column: span 3; min-height: 80px; resize: vertical; }
+      .form-area button {
+        background: #0f3460; color: white; border: none; padding: 10px 20px;
+        border-radius: 8px; cursor: pointer; font-size: 14px;
+        grid-column: span 3;
+      }
+      .contador {
+        background: #0f3460; color: white; border-radius: 12px; padding: 15px 20px;
+        margin-bottom: 20px; font-size: 18px; font-weight: bold; text-align: center;
+      }
+      table {
+        width: 100%; border-collapse: collapse; background: white;
+        border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      }
+      th, td { padding: 12px 15px; text-align: left; font-size: 14px; }
+      th { background: #0f3460; color: white; }
+      tr:nth-child(even) { background: #f7f7f7; }
+      .remover {
+        background: none; border: none; color: #e94560; font-size: 16px; cursor: pointer;
+      }
+      .tom { font-family: monospace; background: #f0f2f5; padding: 2px 6px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>✝️ Igreja Fácil</h1>
+      <button onclick="location.href='dashboard.html'">Voltar</button>
+    </header>
+    <div class="conteudo">
+      <h2>🎵 Repertório de Louvor</h2>
+
+      <div class="contador">Total de músicas: <span id="total">0</span></div>
+
+      <div class="form-area">
+        <input type="text" id="titulo" placeholder="Título da música">
+        <input type="text" id="autor" placeholder="Autor / Intérprete">
+        <select id="categoria">
+          <option value="Louvor">Louvor</option>
+          <option value="Adoração">Adoração</option>
+          <option value="Celebração">Celebração</option>
+          <option value="Outros">Outros</option>
+        </select>
+        <input type="text" id="tom" placeholder="Tom (ex: D, G, A)">
+        <textarea id="letra" placeholder="Letra / Cifra (opcional)"></textarea>
+        <button onclick="adicionarMusica()">Adicionar Música</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Categoria</th>
+            <th>Tom</th>
+            <th>Letra</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="lista"></tbody>
+      </table>
+    </div>
+
+    <script>
+      let musicas = JSON.parse(localStorage.getItem('musicas')) || [];
+
+      function renderizar() {
+        const lista = document.getElementById('lista');
+        lista.innerHTML = '';
+        musicas.forEach((m, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${m.titulo}</td>
+            <td>${m.autor}</td>
+            <td>${m.categoria}</td>
+            <td class="tom">${m.tom || '-'}</td>
+            <td>${m.letra ? '<span style="cursor:pointer" onclick="verLetra(' + i + ')">👁️ Ver</span>' : '-'}</td>
+            <td><button class="remover" onclick="removerMusica(${i})">✕</button></td>
+          `;
+          lista.appendChild(tr);
+        });
+        document.getElementById('total').textContent = musicas.length;
+      }
+
+      function adicionarMusica() {
+        const titulo = document.getElementById('titulo').value.trim();
+        const autor = document.getElementById('autor').value.trim();
+        const categoria = document.getElementById('categoria').value;
+        const tom = document.getElementById('tom').value.trim();
+        const letra = document.getElementById('letra').value.trim();
+
+        if (!titulo) {
+          alert('Preencha o título da música.');
+          return;
+        }
+
+        musicas.push({ titulo, autor, categoria, tom, letra });
+        salvar();
+        renderizar();
+
+        document.getElementById('titulo').value = '';
+        document.getElementById('autor').value = '';
+        document.getElementById('categoria').value = 'Louvor';
+        document.getElementById('tom').value = '';
+        document.getElementById('letra').value = '';
+      }
+
+      function removerMusica(i) {
+        musicas.splice(i, 1);
+        salvar();
+        renderizar();
+      }
+
+      function verLetra(i) {
+        const m = musicas[i];
+        alert(`${m.titulo} (${m.tom || 'sem tom'})\n\n${m.letra || 'Sem letra/cifra cadastrada'}`);
+      }
+
+      function salvar() {
+        localStorage.setItem('musicas', JSON.stringify(musicas));
+      }
+
+      renderizar();
+    </script>
+  </body>
+</html>
