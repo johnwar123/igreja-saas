@@ -1,60 +1,136 @@
-import './style.css'
-import javascriptLogo from './assets/javascript.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import { setupCounter } from './counter.js'
+import './style.css';
+import { addRoute, setNotFoundHandler, beforeEach, startRouter, navigate } from './router.js';
+import { loadSession, logout, getCurrentUser, hasRole } from './auth.js';
+import { Header, Sidebar } from './components.js';
+import { renderLoginPage } from './pages/LoginPage.js';
+import { renderRegisterPage } from './pages/RegisterPage.js';
+import { renderDashboardPage } from './pages/DashboardPage.js';
+import { renderMembersPage } from './pages/MembersPage.js';
+import { renderTithesPage } from './pages/TithesPage.js';
+import { renderEventsPage } from './pages/EventsPage.js';
+import { renderSongsPage } from './pages/SongsPage.js';
+import { renderAnnouncementsPage } from './pages/AnnouncementsPage.js';
+import { renderLiturgiesPage } from './pages/LiturgiesPage.js';
+import { renderUsersPage } from './pages/UsersPage.js';
 
-document.querySelector('#app').innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${javascriptLogo}" class="framework" alt="JavaScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.js</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+const app = document.getElementById('app');
 
-<div class="ticks"></div>
+let currentLayout = null;
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-          <img class="button-icon" src="${javascriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+function renderLayout({ title, children, currentPath }) {
+  const user = getCurrentUser();
+  
+  if (currentLayout) {
+    currentLayout.remove();
+  }
+  
+  currentLayout = createElement('div', { class: 'app-layout' }, [
+    Header({ title, user, onLogout: logout }),
+    createElement('div', { class: 'app-main' }, [
+      Sidebar({ currentPath, onNavigate: navigate, user }),
+      createElement('main', { class: 'app-content', id: 'page-content' }, children),
+    ]),
+  ]);
+  
+  app.appendChild(currentLayout);
+  return document.getElementById('page-content');
+}
 
-<div class="ticks"></div>
-<section id="spacer"></section>
-`
+function createPageContainer() {
+  return createElement('div', { class: 'page-container' });
+}
 
-setupCounter(document.querySelector('#counter'))
+beforeEach(async (path) => {
+  const publicPaths = ['/login', '/register'];
+  const isPublic = publicPaths.includes(path);
+  
+  if (!isPublic) {
+    const hasSession = await loadSession();
+    if (!hasSession) {
+      window.location.hash = '#/login';
+      return false;
+    }
+  } else {
+    const hasSession = await loadSession();
+    if (hasSession) {
+      window.location.hash = '#/dashboard';
+      return false;
+    }
+  }
+  
+  return true;
+});
+
+addRoute('/login', () => {
+  const container = createPageContainer();
+  renderLayout({ title: 'Login', children: container, currentPath: '/login' });
+  renderLoginPage(container);
+});
+
+addRoute('/register', () => {
+  const container = createPageContainer();
+  renderLayout({ title: 'Cadastro', children: container, currentPath: '/register' });
+  renderRegisterPage(container);
+});
+
+addRoute('/dashboard', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Dashboard', children: container, currentPath: '/dashboard' });
+  renderDashboardPage(content);
+});
+
+addRoute('/members', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Membros', children: container, currentPath: '/members' });
+  renderMembersPage(content);
+});
+
+addRoute('/tithes', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Dízimos', children: container, currentPath: '/tithes' });
+  renderTithesPage(content);
+});
+
+addRoute('/events', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Eventos', children: container, currentPath: '/events' });
+  renderEventsPage(content);
+});
+
+addRoute('/songs', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Louvor', children: container, currentPath: '/songs' });
+  renderSongsPage(content);
+});
+
+addRoute('/announcements', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Comunicados', children: container, currentPath: '/announcements' });
+  renderAnnouncementsPage(content);
+});
+
+addRoute('/liturgies', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Liturgia', children: container, currentPath: '/liturgies' });
+  renderLiturgiesPage(content);
+});
+
+addRoute('/users', () => {
+  const container = createPageContainer();
+  const content = renderLayout({ title: 'Usuários', children: container, currentPath: '/users' });
+  renderUsersPage(content);
+});
+
+setNotFoundHandler((path) => {
+  const container = createPageContainer();
+  renderLayout({ title: 'Não Encontrado', children: container, currentPath: path });
+  container.innerHTML = `
+    <div class="error-page">
+      <h1>404</h1>
+      <p>Página não encontrada: ${path}</p>
+      <a href="#/dashboard" class="btn btn-primary">Voltar ao Dashboard</a>
+    </div>
+  `;
+});
+
+startRouter();
