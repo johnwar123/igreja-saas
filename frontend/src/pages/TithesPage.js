@@ -4,7 +4,6 @@ import { hasRole } from '../auth.js';
 
 export async function renderTithesPage(container) {
   container.innerHTML = '';
-  
   let tithes = [];
   let total = 0;
   let summary = [];
@@ -15,13 +14,10 @@ export async function renderTithesPage(container) {
   let showModal = false;
   let editingTithe = null;
   let deleteConfirm = null;
-  
   const canWrite = hasRole('pastor', 'secretario', 'tesoureiro');
   const canDelete = hasRole('pastor', 'tesoureiro');
-  
   const typeOptions = ['Dízimo', 'Oferta', 'Missões', 'Construção', 'Outros'];
   const paymentOptions = ['Dinheiro', 'PIX', 'Cartão', 'Transferência', 'Outros'];
-  
   async function fetchTithes() {
     loading = true;
     error = null;
@@ -41,8 +37,6 @@ export async function renderTithesPage(container) {
       loading = false;
       render();
     }
-  }
-  
   async function handleCreate(data) {
     try {
       await api.tithes.create(data);
@@ -52,8 +46,6 @@ export async function renderTithesPage(container) {
     } catch (e) {
       return { error: e.message };
     }
-  }
-  
   async function handleUpdate(id, data) {
     try {
       await api.tithes.update(id, data);
@@ -63,8 +55,6 @@ export async function renderTithesPage(container) {
     } catch (e) {
       return { error: e.message };
     }
-  }
-  
   async function handleDelete(id) {
     try {
       await api.tithes.delete(id);
@@ -73,26 +63,18 @@ export async function renderTithesPage(container) {
     } catch (e) {
       return { error: e.message };
     }
-  }
-  
   function openCreate() {
     editingTithe = null;
     showModal = true;
     render();
-  }
-  
   function openEdit(tithe) {
     editingTithe = tithe;
     showModal = true;
     render();
-  }
-  
   function confirmDelete(tithe) {
     deleteConfirm = tithe;
     render();
-  }
-  
-  function render() {
+  async function render() {
     const columns = [
       { key: 'name', header: 'Nome' },
       { key: 'member_name', header: 'Membro', render: (row) => row.member_name || 'Avulso' },
@@ -156,7 +138,7 @@ export async function renderTithesPage(container) {
     container.appendChild(content);
     
     if (showModal) {
-      const modalContent = editingTithe ? renderTitheForm(editingTithe) : renderTitheForm();
+      const modalContent = await renderTitheForm(editingTithe);
       container.appendChild(Modal({
         isOpen: true,
         title: editingTithe ? 'Editar Registro' : 'Novo Registro',
@@ -181,66 +163,5 @@ export async function renderTithesPage(container) {
         ]),
       }));
     }
-  }
-  
-  function renderTitheForm(tithe = null) {
-    let formError = null;
-    let membersCache = [];
-    
-    const handleSubmit = async (data) => {
-      formError = null;
-      const payload = {
-        ...data,
-        member_id: data.member_id ? Number(data.member_id) : null,
-        amount: Number(data.amount),
-      };
-      const result = tithe ? await handleUpdate(tithe.id, payload) : await handleCreate(payload);
-      if (result?.error) {
-        formError = result.error;
-        renderModalContent();
-      }
-    };
-    
-    async function loadMembers() {
-      try {
-        const res = await api.members.list({ limit: 500, status: 'Ativo' });
-        membersCache = res.members || [];
-      } catch (e) {
-        membersCache = [];
-      }
-    }
-    
-    async function renderModalContent() {
-      if (membersCache.length === 0) await loadMembers();
-      
-      const form = Form({
-        fields: [
-          { name: 'member_id', label: 'Membro (opcional)', type: 'select', options: [
-            { value: '', label: '— Doação avulsa —' },
-            ...membersCache.map(m => ({ value: String(m.id), label: m.name })),
-          ]},
-          { name: 'name', label: 'Nome *', type: 'text', required: true, placeholder: 'Nome do doador' },
-          { name: 'amount', label: 'Valor *', type: 'number', required: true, step: '0.01', min: '0.01', placeholder: '0.00' },
-          { name: 'type', label: 'Tipo *', type: 'select', required: true, options: typeOptions.map(t => ({ value: t, label: t })) },
-          { name: 'date', label: 'Data *', type: 'date', required: true },
-          { name: 'payment_method', label: 'Método de Pagamento *', type: 'select', required: true, options: paymentOptions.map(p => ({ value: p, label: p })) },
-          { name: 'notes', label: 'Observações', type: 'textarea', placeholder: 'Notas adicionais' },
-        ],
-        onSubmit: handleSubmit,
-        initialValues: tithe || { type: 'Dízimo', payment_method: 'Dinheiro', date: new Date().toISOString().split('T')[0] },
-        submitLabel: tithe ? 'Salvar Alterações' : 'Registrar',
-      });
-      
-      form.addEventListener('cancel', () => { showModal = false; editingTithe = null; render(); });
-      
-      return createElement('div', {}, [
-        formError && Alert({ type: 'error', message: formError, dismissible: true, onDismiss: () => { formError = null; renderModalContent(); } }),
-        form,
-      ]);
-    }
-    
-    return renderModalContent();
-  }
-  
   await fetchTithes();
 }

@@ -62,8 +62,14 @@ export function Sidebar({ currentPath, onNavigate, user }) {
 export function Modal({ isOpen, title, children, onClose, size = 'md' }) {
   if (!isOpen) return createElement('div');
   
-  const overlay = createElement('div', { class: 'modal-overlay', onclick: onClose }, [
-    createElement('div', { class: `modal modal-${size}`, onclick: e => e.stopPropagation() }, [
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+  
+  const overlay = createElement('div', { class: 'modal-overlay', onclick: handleOverlayClick }, [
+    createElement('div', { class: `modal modal-${size}` }, [
       createElement('div', { class: 'modal-header' }, [
         createElement('h3', {}, title),
         createElement('button', { class: 'modal-close', onclick: onClose }, '×'),
@@ -172,7 +178,7 @@ export function Button({ label, variant = 'primary', size = 'md', onclick, disab
   return createElement('button', {
     class: `btn btn-${variant} btn-${size}`,
     onclick,
-    disabled,
+    ...(disabled ? { disabled } : {}),
     type,
   }, label);
 }
