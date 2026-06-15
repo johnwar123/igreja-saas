@@ -1,7 +1,7 @@
 import './style.css';
 import { addRoute, setNotFoundHandler, beforeEach, startRouter, navigate } from './router.js';
 import { loadSession, logout, getCurrentUser, hasRole } from './auth.js';
-import { Header, Sidebar } from './components.js';
+import { Header, Sidebar, createElement } from './components.js';
 import { renderLoginPage } from './pages/LoginPage.js';
 import { renderRegisterPage } from './pages/RegisterPage.js';
 import { renderDashboardPage } from './pages/DashboardPage.js';

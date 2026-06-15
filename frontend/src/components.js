@@ -1,3 +1,5 @@
+import { hasRole } from './auth.js';
+
 export function createElement(tag, attrs = {}, ...children) {
   const el = document.createElement(tag);
   Object.entries(attrs).forEach(([key, value]) => {
@@ -14,8 +16,6 @@ export function createElement(tag, attrs = {}, ...children) {
   });
   return el;
 }
-
-import { hasRole } from './auth.js';
 
 export function Header({ title, user, onLogout }) {
   const header = createElement('header', { class: 'app-header' }, [
