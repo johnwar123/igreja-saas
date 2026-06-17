@@ -1,0 +1,21 @@
+res.json({ success: true });
+});
+
+const server = app.listen(PORT, () => {
+  const actualPort = server.address().port;
+  console.log(`🚀 Backend rodando em http://localhost:${actualPort}`);
+  console.log(`📊 Health check: http://localhost:${actualPort}/health`);
+  console.log(`🔍 Debug routes: http://localhost:${actualPort}/debug/routes`);
+});
+
+server.on('error', (err) => {
+  console.error('[ERROR] Server error:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[ERROR] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[ERROR] Uncaught Exception:', err);
+});

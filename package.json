@@ -1,0 +1,98 @@
+{
+  "name": "igreja-facil",
+  "version": "1.0.0",
+  "description": "Multi-tenant church management SaaS - Desktop Offline App",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "electron:dev": "concurrently \"npm run dev:backend\" \"wait-on http://localhost:3001/health && npm run dev:frontend\" \"electron .\"",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm install --production",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:portable": "npm run build && electron-builder --win portable",
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": [
+    "church",
+    "management",
+    "saas",
+    "electron",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.35.1",
+    "to-ico": "^1.1.5",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.igreja.facil",
+    "productName": "Igreja Fácil",
+    "copyright": "Copyright 2024",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "backend/**/*",
+      "frontend/dist/**/*",
+      "!backend/node_modules/**/*",
+      "!backend/data/**/*",
+      "!backend/.env",
+      "!frontend/node_modules/**/*",
+      "!frontend/src/**/*",
+      "!frontend/*.html",
+      "!frontend/vite.config.js"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/data",
+        "to": "backend/data",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Igreja Fácil",
+      "uninstallDisplayName": "Igreja Fácil",
+      "license": "build/license.txt"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-${arch}.exe"
+    }
+  }
+}
