@@ -18,11 +18,12 @@ export async function renderTithesPage(container) {
   const canDelete = hasRole('pastor', 'tesoureiro');
   const typeOptions = ['Dízimo', 'Oferta', 'Missões', 'Construção', 'Outros'];
   const paymentOptions = ['Dinheiro', 'PIX', 'Cartão', 'Transferência', 'Outros'];
+
   async function fetchTithes() {
     loading = true;
     error = null;
     render();
-    
+
     try {
       const [listRes, summaryRes] = await Promise.all([
         api.tithes.list({ limit, offset: (page - 1) * limit }),
@@ -37,6 +38,8 @@ export async function renderTithesPage(container) {
       loading = false;
       render();
     }
+  }
+
   async function handleCreate(data) {
     try {
       await api.tithes.create(data);
@@ -46,6 +49,8 @@ export async function renderTithesPage(container) {
     } catch (e) {
       return { error: e.message };
     }
+  }
+
   async function handleUpdate(id, data) {
     try {
       await api.tithes.update(id, data);
@@ -55,6 +60,8 @@ export async function renderTithesPage(container) {
     } catch (e) {
       return { error: e.message };
     }
+  }
+
   async function handleDelete(id) {
     try {
       await api.tithes.delete(id);
@@ -63,17 +70,25 @@ export async function renderTithesPage(container) {
     } catch (e) {
       return { error: e.message };
     }
+  }
+
   function openCreate() {
     editingTithe = null;
     showModal = true;
     render();
+  }
+
   function openEdit(tithe) {
     editingTithe = tithe;
     showModal = true;
     render();
+  }
+
   function confirmDelete(tithe) {
     deleteConfirm = tithe;
     render();
+  }
+
   async function render() {
     const columns = [
       { key: 'name', header: 'Nome' },
@@ -83,12 +98,12 @@ export async function renderTithesPage(container) {
       { key: 'payment_method', header: 'Método', render: (row) => Badge({ label: row.payment_method, variant: 'info' }) },
       { key: 'date', header: 'Data', render: (row) => new Date(row.date).toLocaleDateString('pt-BR') },
     ];
-    
+
     const actions = canWrite ? [
       { label: 'Editar', variant: 'secondary', handler: openEdit },
       ...(canDelete ? [{ label: 'Excluir', variant: 'danger', handler: confirmDelete }] : []),
     ] : undefined;
-    
+
     const summaryCards = typeOptions.map(type => {
       const s = summary.find(x => x.type === type);
       return createElement('div', { class: 'stat-card' }, [
@@ -100,7 +115,7 @@ export async function renderTithesPage(container) {
         ]),
       ]);
     });
-    
+
     const content = createElement('div', { class: 'page-content-inner' }, [
       createElement('div', { class: 'page-header' }, [
         createElement('div', {}, [
@@ -109,16 +124,16 @@ export async function renderTithesPage(container) {
         ]),
         canWrite && Button({ label: 'Novo Registro', variant: 'primary', onclick: openCreate }),
       ]),
-      
+
       error && Alert({ type: 'error', message: error, dismissible: true, onDismiss: () => { error = null; render(); } }),
-      
+
       Card({
         title: 'Resumo por Tipo',
         children: createElement('div', { class: 'stats-grid' }, summaryCards),
       }),
-      
+
       Card({
-        children: loading ? createElement('div', { class: 'page-loading' }, Spinner({ size: 'lg' })) : 
+        children: loading ? createElement('div', { class: 'page-loading' }, Spinner({ size: 'lg' })) :
           tithes.length > 0 ? Table({ columns, data: tithes, actions, onRowClick: openEdit }) :
           createElement('div', { class: 'empty-state' }, [
             createElement('p', {}, 'Nenhum registro financeiro'),
@@ -133,10 +148,10 @@ export async function renderTithesPage(container) {
         ]) : undefined,
       }),
     ]);
-    
+
     container.innerHTML = '';
     container.appendChild(content);
-    
+
     if (showModal) {
       const modalContent = await renderTitheForm(editingTithe);
       container.appendChild(Modal({
@@ -147,7 +162,7 @@ export async function renderTithesPage(container) {
         children: modalContent,
       }));
     }
-    
+
     if (deleteConfirm) {
       container.appendChild(Modal({
         isOpen: true,
@@ -163,5 +178,66 @@ export async function renderTithesPage(container) {
         ]),
       }));
     }
+  }
+
+  async function renderTitheForm(tithe = null) {
+    let formError = null;
+    let membersCache = [];
+
+    const handleSubmit = async (data) => {
+      formError = null;
+      const payload = {
+        ...data,
+        member_id: data.member_id ? Number(data.member_id) : null,
+        amount: Number(data.amount),
+      };
+      const result = tithe ? await handleUpdate(tithe.id, payload) : await handleCreate(payload);
+      if (result?.error) {
+        formError = result.error;
+        renderModalContent();
+      }
+    };
+
+    async function loadMembers() {
+      try {
+        const res = await api.members.list({ limit: 500, status: 'Ativo' });
+        membersCache = res.members || [];
+      } catch (e) {
+        membersCache = [];
+      }
+    }
+
+    async function renderModalContent() {
+      if (membersCache.length === 0) await loadMembers();
+
+      const form = Form({
+        fields: [
+          { name: 'member_id', label: 'Membro (opcional)', type: 'select', options: [
+            { value: '', label: '— Doação avulsa —' },
+            ...membersCache.map(m => ({ value: String(m.id), label: m.name })),
+          ]},
+          { name: 'name', label: 'Nome *', type: 'text', required: true, placeholder: 'Nome do doador' },
+          { name: 'amount', label: 'Valor *', type: 'number', required: true, step: '0.01', min: '0.01', placeholder: '0,00' },
+          { name: 'type', label: 'Tipo *', type: 'select', required: true, options: typeOptions.map(t => ({ value: t, label: t })) },
+          { name: 'date', label: 'Data *', type: 'date', required: true },
+          { name: 'payment_method', label: 'Método de Pagamento *', type: 'select', required: true, options: paymentOptions.map(p => ({ value: p, label: p })) },
+          { name: 'notes', label: 'Observações', type: 'textarea', placeholder: 'Observações adicionais' },
+        ],
+        onSubmit: handleSubmit,
+        initialValues: tithe || { type: 'Dízimo', payment_method: 'Dinheiro', date: new Date().toISOString().split('T')[0] },
+        submitLabel: tithe ? 'Salvar Alterações' : 'Registrar',
+      });
+
+      form.addEventListener('cancel', () => { showModal = false; editingTithe = null; render(); });
+
+      return createElement('div', {}, [
+        formError && Alert({ type: 'error', message: formError, dismissible: true, onDismiss: () => { formError = null; renderModalContent(); } }),
+        form,
+      ]);
+    }
+
+    return renderModalContent();
+  }
+
   await fetchTithes();
 }
