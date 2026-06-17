@@ -50,3 +50,14 @@ coverage/
 *.pem
 .cache/
 node_modules
+dist-electron/
+*.exe
+*.7z
+*.bin
+*.dll
+*.pak
+*.db
+*.db-shm
+*.db-wal
+imagemagick.exe
+magick*

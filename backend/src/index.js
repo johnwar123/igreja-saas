@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import setlistsRoutes from './routes/setlists.js';
+import eventAttendeesRoutes from './routes/eventAttendees.js';
 
 console.log('[DEBUG] Starting server...');
 
@@ -662,6 +664,12 @@ app.delete('/users/:id', requireAuth, requireChurch, requireRole('pastor'), (req
   res.json({ success: true });
 });
 
+
+// Setlists routes
+setlistsRoutes(app, db, requireAuth, requireChurch, requireRole);
+
+// Event Attendees routes
+eventAttendeesRoutes(app, db, requireAuth, requireChurch, requireRole);
 const server = app.listen(PORT, () => {
   console.log(`🚀 Backend rodando em http://localhost:${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
